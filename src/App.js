@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./styles/App.css";
+import { BrowserRouter } from "react-router-dom";
+import MyNavbar from "./components/MyNavbar";
+import AppRouter from "./components/AppRouter";
+import { AuthContext } from "./context/auth";
 
 function App() {
+  const [filter, setFilter] = useState({ sort: "", query: "" });
+  const [isAuth, setIsAuth] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      setIsAuth(true);
+    }
+    setLoading(false);
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthContext.Provider value={{ isAuth, setIsAuth, isLoading }}>
+      <BrowserRouter>
+        <MyNavbar filter={filter} setFilter={setFilter} />
+        <AppRouter filter={filter} setFilter={setFilter} />
+      </BrowserRouter>
+    </AuthContext.Provider>
   );
 }
 
